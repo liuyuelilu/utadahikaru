@@ -1,30 +1,96 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'hello')}">
+<html xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{fragments/layout :: layout (~{::body},'hello')}">
 <body>
-  <!--
+	<!--
     you can substitue the span of reauth email for a input with the email and
     include the remember me checkbox
     -->
-    <div class="container">
-        <div class="card card-container">
-            <!-- <img class="profile-img-card" src="//lh3.googleusercontent.com/-6V8xOA6M7BA/AAAAAAAAAAI/AAAAAAAAAAA/rzlHcD0KYwo/photo.jpg?sz=120" alt="" /> -->
-            <img id="profile-img" class="profile-img-card" src="//ssl.gstatic.com/accounts/ui/avatar_2x.png" />
-            <p id="profile-name" class="profile-name-card"></p>
-            <form class="form-signin">
-                <span id="reauth-email" class="reauth-email"></span>
-                <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
-                <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
-                <div id="remember" class="checkbox">
-                    <label>
-                        <input type="checkbox" value="remember-me"> Remember me
-                    </label>
-                </div>
-                <button class="btn btn-lg btn-primary btn-block btn-signin" type="submit">Sign in</button>
-            </form><!-- /form -->
-            <a href="#" class="forgot-password">
-                Forgot the password?
-            </a>
-        </div><!-- /card-container -->
-    </div><!-- /container -->
+	<div class="container">
+		<div class="card card-container">
+			<!-- <img class="profile-img-card" src="//lh3.googleusercontent.com/-6V8xOA6M7BA/AAAAAAAAAAI/AAAAAAAAAAA/rzlHcD0KYwo/photo.jpg?sz=120" alt="" /> -->
+			<img id="profile-img" class="profile-img-card"
+				src="//ssl.gstatic.com/accounts/ui/avatar_2x.png" />
+			<p id="profile-name" class="profile-name-card"></p>
+			<form class="form-signin">
+				<div class="form-group">
+					<span id="reauth-email" class="reauth-email"></span> <input
+						type="email" id="inputEmail" name="inputEmail"
+						class="form-control" placeholder="Email address" required
+						autofocus>
+				</div>
+				<div class="form-group">
+					<input type="password" id="inputPassword" name="inputPassword"
+						class="form-control" placeholder="Password" required>
+				</div>
+				<div id="remember" class="checkbox">
+					<label> <input type="checkbox" value="remember-me">
+						Remember me
+					</label>
+				</div>
+				<button class="btn btn-lg btn-primary btn-block btn-signin"
+					id="login" type="submit">Sign in</button>
+			</form>
+			<!-- /form -->
+			<a href="#" class="forgot-password"> Forgot the password? </a>
+		</div>
+		<!-- /card-container -->
+	</div>
+	<!-- /container -->
+	<script type="text/javascript">
+		$(function() {
+
+			$('form').validate({
+				onkeyup : false,
+				onfocusout : false,
+				focusInvalid : false,
+				focusCleanup : true,
+				focusInvalid : false,
+				rules : {
+					inputEmail : {
+						required : true,
+						email : true
+					},
+					inputPassword : {
+						required : true,
+						minlength : 6
+					}
+				},
+				errorElement : 'span',
+				errorClass : 'help-block',
+				highlight : function(element) {
+					$(element).closest('.form-group').addClass('has-error');
+				},
+
+				success : function(label) {
+					label.closest('.form-group').removeClass('has-error');
+					label.remove();
+				},
+
+				errorPlacement : function(error, element) {
+					element.parent('div').append(error);
+				},
+
+				submitHandler : function(form) {
+					$.ajax({
+						type : 'POST',
+						url : '/login',
+						headers : {
+							'Content-Type' : 'application/json;charset=utf-8'
+						},
+						data : JSON.stringify({
+							inputEmail : $("#inputEmail").val(),
+							inputPassword : $("#inputPassword").val()
+						}),
+						success : function(data) {
+							alert(data.flag);
+						}
+					});
+					return false;
+				}
+			});
+
+		});
+	</script>
 </body>
 </html>

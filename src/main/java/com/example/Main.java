@@ -16,6 +16,7 @@
 
 package com.example;
 
+import com.heroku.form.LoginForm;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -32,6 +36,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import static javax.measure.unit.SI.KILOGRAM;
@@ -86,6 +91,44 @@ public class Main {
       model.put("science", "E=mc^2: 12 GeV = " + m.toString());
       return "hello";
   }
+  
+	@RequestMapping("/login")
+	@ResponseBody
+	Map<String, Object> login(@RequestBody LoginForm form) {
+
+		System.out.println(form.getInputEmail());
+
+		System.out.println(form.getInputPassword());
+
+		Map<String, Object> result = new HashMap();
+
+		try (Connection connection = dataSource.getConnection()) {
+			Statement stmt = connection.createStatement();
+
+			StringBuilder sb = new StringBuilder();
+			sb.append(" SELECT ");
+			sb.append(" * ");
+			sb.append(" FROM ");
+			sb.append(" user_master ");
+			sb.append(" WHERE  ");
+			sb.append(" username = '" + form.getInputEmail() + "'");
+			sb.append(" AND passwd = '" + form.getInputPassword() + "'");
+			ResultSet rs = stmt.executeQuery(sb.toString());
+
+			ArrayList<String> output = new ArrayList<String>();
+			if (rs.next()) {
+				//
+				result.put("flag", "OK");
+			} else {
+				result.put("flag", "NG");
+			}
+			return result;
+		} catch (Exception e) {
+			result.put("flag", "ERR");
+			return result;
+		}
+	}
+  
   
   @Bean
   public DataSource dataSource() throws SQLException {
