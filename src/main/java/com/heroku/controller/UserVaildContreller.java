@@ -43,7 +43,12 @@ public class UserVaildContreller {
         }
         catch (Exception e)
         {
-            result.put("flag", e.getStackTrace());
+             StringBuilder sb = new StringBuilder();
+             for(StackTraceElement g :e.getStackTrace())
+            {
+                sb.append(g.toString());
+            }
+            result.put("flag", sb.toString());
         }
 
         return result;
