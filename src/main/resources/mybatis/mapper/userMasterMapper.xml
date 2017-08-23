@@ -3,14 +3,14 @@
 
 <mapper namespace="com.heroku.mapper.UserMasterMapper" >
     <resultMap id="BaseResultMap" type="com.heroku.entity.UserMasterEntity" >
-        <id column="username" property="userName" jdbcType="VARCHAR" />
+        <id column="username" property="username" jdbcType="VARCHAR" />
         <result column="name" property="name" jdbcType="VARCHAR" />
         <result column="passwd" property="passwd" jdbcType="VARCHAR" />
         <result column="tick" property="tick" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <sql id="Base_Column_List" >
-        userName, name, passwd, tick
+        username, name, passwd, tick
     </sql>
 
     <select id="getAll" resultMap="BaseResultMap"  >
