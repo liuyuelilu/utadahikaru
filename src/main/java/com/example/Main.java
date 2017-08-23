@@ -19,11 +19,14 @@ package com.example;
 import com.heroku.form.LoginForm;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.ComponentScans;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -46,13 +49,15 @@ import org.jscience.physics.amount.Amount;
 
 @Controller
 @SpringBootApplication
+@ComponentScan(basePackages = "com.heroku")
+@MapperScan("com.heroku.mapper")
 public class Main {
 
-  @Value("${spring.datasource.url}")
-  private String dbUrl;
-
-  @Autowired
-  private DataSource dataSource;
+//  @Value("${spring.datasource.url}")
+//  private String dbUrl;
+//
+//  @Autowired
+//  private DataSource dataSource;
 
   public static void main(String[] args) throws Exception {
     SpringApplication.run(Main.class, args);
@@ -63,26 +68,26 @@ public class Main {
     return "index";
   }
 
-  @RequestMapping("/db")
-  String db(Map<String, Object> model) {
-    try (Connection connection = dataSource.getConnection()) {
-      Statement stmt = connection.createStatement();
-      stmt.executeUpdate("CREATE TABLE IF NOT EXISTS ticks (tick timestamp)");
-      stmt.executeUpdate("INSERT INTO ticks VALUES (now())");
-      ResultSet rs = stmt.executeQuery("SELECT tick FROM ticks");
-
-      ArrayList<String> output = new ArrayList<String>();
-      while (rs.next()) {
-        output.add("Read from DB: " + rs.getTimestamp("tick"));
-      }
-
-      model.put("records", output);
-      return "db";
-    } catch (Exception e) {
-      model.put("message", e.getMessage());
-      return "error";
-    }
-  }
+//  @RequestMapping("/db")
+//  String db(Map<String, Object> model) {
+//    try (Connection connection = dataSource.getConnection()) {
+//      Statement stmt = connection.createStatement();
+//      stmt.executeUpdate("CREATE TABLE IF NOT EXISTS ticks (tick timestamp)");
+//      stmt.executeUpdate("INSERT INTO ticks VALUES (now())");
+//      ResultSet rs = stmt.executeQuery("SELECT tick FROM ticks");
+//
+//      ArrayList<String> output = new ArrayList<String>();
+//      while (rs.next()) {
+//        output.add("Read from DB: " + rs.getTimestamp("tick"));
+//      }
+//
+//      model.put("records", output);
+//      return "db";
+//    } catch (Exception e) {
+//      model.put("message", e.getMessage());
+//      return "error";
+//    }
+//  }
 
   @RequestMapping("/hello")
   String hello(Map<String, Object> model) {
@@ -92,53 +97,17 @@ public class Main {
       return "hello";
   }
   
-	@RequestMapping("/login")
-	@ResponseBody
-	Map<String, Object> login(@RequestBody LoginForm form) {
 
-		System.out.println(form.getInputEmail());
-
-		System.out.println(form.getInputPassword());
-
-		Map<String, Object> result = new HashMap();
-
-		try (Connection connection = dataSource.getConnection()) {
-			Statement stmt = connection.createStatement();
-
-			StringBuilder sb = new StringBuilder();
-			sb.append(" SELECT ");
-			sb.append(" * ");
-			sb.append(" FROM ");
-			sb.append(" user_master ");
-			sb.append(" WHERE  ");
-			sb.append(" username = '" + form.getInputEmail() + "'");
-			sb.append(" AND passwd = '" + form.getInputPassword() + "'");
-			ResultSet rs = stmt.executeQuery(sb.toString());
-
-			ArrayList<String> output = new ArrayList<String>();
-			if (rs.next()) {
-				//
-				result.put("flag", "OK");
-			} else {
-				result.put("flag", "NG");
-			}
-			return result;
-		} catch (Exception e) {
-			result.put("flag", "ERR");
-			return result;
-		}
-	}
   
-  
-  @Bean
-  public DataSource dataSource() throws SQLException {
-    if (dbUrl == null || dbUrl.isEmpty()) {
-      return new HikariDataSource();
-    } else {
-      HikariConfig config = new HikariConfig();
-      config.setJdbcUrl(dbUrl);
-      return new HikariDataSource(config);
-    }
-  }
+//  @Bean
+//  public DataSource dataSource() throws SQLException {
+//    if (dbUrl == null || dbUrl.isEmpty()) {
+//      return new HikariDataSource();
+//    } else {
+//      HikariConfig config = new HikariConfig();
+//      config.setJdbcUrl(dbUrl);
+//      return new HikariDataSource(config);
+//    }
+//  }
 
 }
