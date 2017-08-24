@@ -16,36 +16,19 @@
 
 package com.example;
 
-import com.heroku.form.LoginForm;
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
+import org.jscience.physics.amount.Amount;
+import org.jscience.physics.model.RelativisticModel;
 import org.mybatis.spring.annotation.MapperScan;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.ComponentScans;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashMap;
+import javax.measure.quantity.Mass;
 import java.util.Map;
 
 import static javax.measure.unit.SI.KILOGRAM;
-import javax.measure.quantity.Mass;
-import org.jscience.physics.model.RelativisticModel;
-import org.jscience.physics.amount.Amount;
 
 @Controller
 @SpringBootApplication
@@ -81,6 +64,7 @@ public class Main {
 //        output.add("Read from DB: " + rs.getTimestamp("tick"));
 //      }
 //
+
 //      model.put("records", output);
 //      return "db";
 //    } catch (Exception e) {

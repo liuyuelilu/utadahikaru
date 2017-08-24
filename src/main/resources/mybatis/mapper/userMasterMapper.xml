@@ -26,4 +26,30 @@
         WHERE username = #{username}
     </select>
 
+    <insert id="insert" parameterType="com.heroku.entity.UserMasterEntity" >
+        INSERT INTO
+        user_master
+        (<include refid="Base_Column_List" />)
+        VALUES
+        (#{username}, #{name}, #{passwd}, #{tick})
+    </insert>
+
+    <update id="update" parameterType="com.heroku.entity.UserMasterEntity" >
+        UPDATE
+        user_master
+        SET
+        <if test="username != null">username = #{username},</if>
+        <if test="passwd != null">passwd = #{passwd},</if>
+        <if test="name != null">name = #{name},</if>
+        username = #{username}
+        WHERE
+        username = #{username}
+    </update>
+
+    <delete id="delete" parameterType="String" >
+        DELETE FROM
+        user_master
+        WHERE
+        username =#{username}
+    </delete>
 </mapper>
