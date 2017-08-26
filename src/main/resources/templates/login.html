@@ -24,7 +24,7 @@
 						class="form-control" placeholder="Password" required>
 				</div>
 				<div id="remember" class="checkbox">
-					<label> <input type="checkbox" value="remember-me">
+					<label> <input id="rememberMe" type="checkbox" value="remember-me">
 						Remember me
 					</label>
 				</div>
@@ -73,17 +73,18 @@
 				submitHandler : function(form) {
 					$.ajax({
 						type : 'POST',
-						url : '/login',
+						url : '/ajaxLogin',
 						headers : {
 							'Content-Type' : 'application/json;charset=utf-8'
 						},
 						data : JSON.stringify({
-							inputEmail : $("#inputEmail").val(),
-							inputPassword : $("#inputPassword").val()
+                            username : $("#inputEmail").val(),
+                            password : $("#inputPassword").val(),
+                            rememberMe : $("#rememberMe").is(':checked')
 						}),
 						success : function(data) {
-							alert(data.flag);
-                            data.flag == "OK" && window.open("/db", "_self")
+							alert(data.message);
+                            data.status == "200" && window.open("/db", "_self")
 						}
 					});
 					return false;
