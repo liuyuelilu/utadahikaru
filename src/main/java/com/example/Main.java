@@ -49,7 +49,10 @@ import org.jscience.physics.amount.Amount;
 
 @Controller
 @SpringBootApplication
-@ComponentScan(basePackages = "com.heroku")
+@ComponentScan(basePackages = "com.heroku.controller")
+@ComponentScan(basePackages = "com.heroku.entity")
+@ComponentScan(basePackages = "com.heroku.shiro")
+
 @MapperScan("com.heroku.mapper")
 public class Main {
 

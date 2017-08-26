@@ -1,24 +1,28 @@
 package com.heroku.shiro;
 
-import com.heroku.entity.U_UserEntity;
-import com.heroku.mapper.U_UserMapper;
+import com.heroku.entity.UUser;
+import com.heroku.entity.UUserExample;
+import com.heroku.mapper.UUserMapper;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
 public class MyShiroRealm extends AuthorizingRealm {
 
+    @Autowired
+    UUserMapper uuserMapper;
 
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         System.out.println("权限认证方法：MyShiroRealm.doGetAuthenticationInfo()");
-        U_UserEntity token = (U_UserEntity) SecurityUtils.getSubject().getPrincipal();
-        String userId = token.getId();
+        UUser token = (UUser) SecurityUtils.getSubject().getPrincipal();
+        Integer userId = token.getId();
         SimpleAuthorizationInfo info =  new SimpleAuthorizationInfo();
         //根据用户ID查询角色（role），放入到Authorization里。
     /*Map<String, Object> map = new
@@ -51,28 +55,30 @@ public class MyShiroRealm extends AuthorizingRealm {
         System.out.println("身份认证方法：MyShiroRealm.doGetAuthenticationInfo()");
 
         UsernamePasswordToken token = (UsernamePasswordToken) authenticationToken;
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("nickname", token.getUsername());
-        map.put("pswd", token.getPassword());
-        U_UserEntity user = null;
-        // 从数据库获取对应用户名密码的用户
-        List<U_UserEntity> userList = U_UserMapper.select(map);
-        if(userList.size()!=0){
-            user = userList.get(0);
+
+        UUserExample exa = new UUserExample();
+        exa.createCriteria().andEmailEqualTo(token.getUsername())
+                .andPswdEqualTo(String.valueOf(token.getPassword()));
+
+        List<UUser> uUsers = uuserMapper.selectByExample(exa);
+        UUser uUser = null;
+
+        if(uUsers.size()!=0){
+            uUser = uUsers.get(0);
         }
-        if (null == user) {
+        if (null == uUser) {
             throw new AccountException("帐号或密码不正确！");
-        }else if(user.getStatus()==0){
+        }else if(uUser.getStatus()==0){
             /**
              * 如果用户的status为禁用。那么就抛出<code>DisabledAccountException</code>
              */
             throw new DisabledAccountException("帐号已经禁止登录！");
         }else{
             //更新登录时间 last login time
-            user.setLast_login_time(new Date());
-            U_UserMapper.update(user);
+            uUser.setLastLoginTime(new Date());
+            uuserMapper.updateByPrimaryKey(uUser);
         }
-        return new SimpleAuthenticationInfo(user, user.getPswd(), getName());
+        return new SimpleAuthenticationInfo(uUser, uUser.getPswd(), getName());
 
     }
 }
