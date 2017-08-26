@@ -29,27 +29,6 @@ public class UserVaildContreller {
 
         Map<String, Object> result = new HashMap();
 
-        try {
-            UserMasterEntity user = userMapper.getOne(form.getInputEmail());
-
-            if(user != null && StringUtils.equals(user.getPasswd(), form.getInputPassword()))
-            {
-                result.put("flag", "OK");
-            }
-            else
-            {
-                result.put("flag", "NG");
-            }
-        }
-        catch (Exception e)
-        {
-             StringBuilder sb = new StringBuilder();
-             for(StackTraceElement g :e.getStackTrace())
-            {
-                sb.append(g.toString());
-            }
-            result.put("flag", sb.toString());
-        }
 
         return result;
 //        try (Connection connection = dataSource.getConnection()) {
