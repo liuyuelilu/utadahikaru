@@ -1,0 +1,12 @@
+本地可以链接heroku的数据库跑
+链接数据库的字符串如JDBC_DATABASE_URL 应该放在环境变量中，而不是配置文件里。
+
+DATABASE_URL 最为权威
+JDBC_DATABASE_URL 次之，大多情况下可以用。（动态的，heroku config无法看到）
+
+JDBC_DATABASE_URL的确认方法
+heroku run echo \$JDBC_DATABASE_URL
+
+参考资料 https://devcenter.heroku.com/articles/connecting-to-relational-databases-on-heroku-with-java#using-the-jdbc_database_url
+
+jdbc:postgresql://ec2-50-19-83-146.compute-1.amazonaws.com:5432/dv5fmed0096r?user=rsprdbbiqnaqig&password=e65600294b31b54ff89be3e2efa3b8931a95b10add553ceed3845ee2c8728a19&sslmode=require

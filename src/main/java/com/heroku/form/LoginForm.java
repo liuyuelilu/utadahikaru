@@ -2,27 +2,33 @@ package com.heroku.form;
 
 public class LoginForm {
 
-	private String inputEmail;
+	private String username;
 	
-	private String inputPassword;
+	private String password;
 
-	public String getInputEmail() {
-		return inputEmail;
+	private Boolean rememberMe;
+
+	public String getUsername() {
+		return username;
 	}
 
-	public void setInputEmail(String inputEmail) {
-		this.inputEmail = inputEmail;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
-	public String getInputPassword() {
-		return inputPassword;
+	public String getPassword() {
+		return password;
 	}
 
-	public void setInputPassword(String inputPassword) {
-		this.inputPassword = inputPassword;
+	public void setPassword(String password) {
+		this.password = password;
 	}
-	
-	
-	
-	
+
+	public Boolean getRememberMe() {
+		return rememberMe;
+	}
+
+	public void setRememberMe(Boolean rememberMe) {
+		this.rememberMe = rememberMe;
+	}
 }
