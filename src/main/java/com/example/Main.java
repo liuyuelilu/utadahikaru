@@ -22,10 +22,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@ComponentScan(basePackages = "com.heroku.config")
-@ComponentScan(basePackages = "com.heroku.controller")
-@ComponentScan(basePackages = "com.heroku.entity")
-@ComponentScan(basePackages = "com.heroku.shiro")
+@ComponentScan({"com.heroku.config","com.heroku.controller","com.heroku.entity","com.heroku.shiro"})
 @MapperScan("com.heroku.mapper")
 public class Main {
 
