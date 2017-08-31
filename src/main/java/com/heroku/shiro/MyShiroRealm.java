@@ -21,14 +21,14 @@ public class MyShiroRealm extends AuthorizingRealm {
 	@Autowired
 	UUserMapper uuserMapper;
 
-	@Autowired
-	StringRedisTemplate stringRedisTemplate;
-
-	// 用户登录次数计数 redisKey 前缀
-	private String SHIRO_LOGIN_COUNT = "shiro_login_count_";
-
-	// 用户登录是否被锁定 一小时 redisKey 前缀
-	private String SHIRO_IS_LOCK = "shiro_is_lock_";
+	// @Autowired
+	// StringRedisTemplate stringRedisTemplate;
+	//
+	// // 用户登录次数计数 redisKey 前缀
+	// private String SHIRO_LOGIN_COUNT = "shiro_login_count_";
+	//
+	// // 用户登录是否被锁定 一小时 redisKey 前缀
+	// private String SHIRO_IS_LOCK = "shiro_is_lock_";
 
 	@Override
 	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
@@ -68,20 +68,23 @@ public class MyShiroRealm extends AuthorizingRealm {
 		System.out.println("身份认证方法：MyShiroRealm.doGetAuthenticationInfo()");
 
 		UsernamePasswordToken token = (UsernamePasswordToken) authenticationToken;
-
-		String name = token.getUsername();
-		// 访问一次，计数一次
-		stringRedisTemplate = new StringRedisTemplate();
-		ValueOperations<String, String> opsForValue = stringRedisTemplate.opsForValue();
-		opsForValue.increment(SHIRO_LOGIN_COUNT + name, 1);
-		// 计数大于5时，设置用户被锁定一小时
-		if (Integer.parseInt(opsForValue.get(SHIRO_LOGIN_COUNT + name)) >= 5) {
-			opsForValue.set(SHIRO_IS_LOCK + name, "LOCK");
-			stringRedisTemplate.expire(SHIRO_IS_LOCK + name, 1, TimeUnit.MINUTES);
-		}
-		if ("LOCK".equals(opsForValue.get(SHIRO_IS_LOCK + name))) {
-			throw new DisabledAccountException("由于密码输入错误次数大于5次，帐号已经禁止1分钟！");
-		}
+		//
+		// String name = token.getUsername();
+		// // 访问一次，计数一次
+		// stringRedisTemplate = new StringRedisTemplate();
+		// ValueOperations<String, String> opsForValue =
+		// stringRedisTemplate.opsForValue();
+		// opsForValue.increment(SHIRO_LOGIN_COUNT + name, 1);
+		// // 计数大于5时，设置用户被锁定一小时
+		// if (Integer.parseInt(opsForValue.get(SHIRO_LOGIN_COUNT + name)) >= 5)
+		// {
+		// opsForValue.set(SHIRO_IS_LOCK + name, "LOCK");
+		// stringRedisTemplate.expire(SHIRO_IS_LOCK + name, 1,
+		// TimeUnit.MINUTES);
+		// }
+		// if ("LOCK".equals(opsForValue.get(SHIRO_IS_LOCK + name))) {
+		// throw new DisabledAccountException("由于密码输入错误次数大于5次，帐号已经禁止1分钟！");
+		// }
 		UUserExample exa = new UUserExample();
 		exa.createCriteria().andEmailEqualTo(token.getUsername()).andPswdEqualTo(String.valueOf(token.getPassword()));
 
