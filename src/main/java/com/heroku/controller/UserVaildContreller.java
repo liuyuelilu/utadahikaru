@@ -18,16 +18,18 @@ import java.util.Map;
 @Controller
 public class UserVaildContreller {
 
-    @RequestMapping("/")
+    @RequestMapping("index")
     String index() {
         return "index";
     }
-
     @RequestMapping("login")
     String login() {
         return "login";
     }
-
+    @RequestMapping(value="add",method= RequestMethod.POST)
+    String add() {
+        return "add";
+    }
     /**
      * ajax登录请求
      * @param loginForm

@@ -44,7 +44,8 @@ public class MyShiroRealm extends AuthorizingRealm {
         permissionSet.add(Permission.getName());
     }*/
         Set<String> permissionSet = new HashSet<String>();
-        permissionSet.add("权限添加");
+        permissionSet.add("用户A");
+        permissionSet.add("工作");
         info.setStringPermissions(permissionSet);
         return info;
 
@@ -61,12 +62,14 @@ public class MyShiroRealm extends AuthorizingRealm {
                 .andPswdEqualTo(String.valueOf(token.getPassword()));
 
         List<UUser> uUsers = uuserMapper.selectByExample(exa);
+
         UUser uUser = null;
 
         if(uUsers.size()!=0){
             uUser = uUsers.get(0);
         }
         if (null == uUser) {
+        	
             throw new AccountException("帐号或密码不正确！");
         }else if(uUser.getStatus()==0){
             /**
