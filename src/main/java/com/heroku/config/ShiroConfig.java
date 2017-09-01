@@ -94,7 +94,16 @@ public class ShiroConfig {
         redisManager.setPort(uri.getPort());
         redisManager.setExpire(1800);// 配置缓存过期时间
         redisManager.setTimeout(timeout);
-        redisManager.setPassword(uri.getUserInfo().split(":")[1]);
+        // password = null?
+        String userInfo = uri.getUserInfo();
+        if(userInfo != null)
+        {
+            String[] info = userInfo.split(":");
+            if(info.length > 1)
+            {
+                redisManager.setPassword(info[1]);
+            }
+        }
         return redisManager;
     }
 
