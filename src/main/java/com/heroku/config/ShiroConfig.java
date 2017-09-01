@@ -3,16 +3,29 @@ import com.heroku.shiro.MyShiroRealm;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
+import org.crazycake.shiro.RedisManager;
+import org.crazycake.shiro.RedisSessionDAO;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Configuration
 public class ShiroConfig {
+
+    @Value("${spring.redis.url}")
+    private String url;
+
+    @Value("${spring.redis.timeout}")
+    private int timeout;
+
     /**
-     * ShiroFilterFactoryBean 处理拦截资源文件问题。
+     * ShiroFilterFactoryBean 处理拦截资源文件问题。   w
      * 注意：单独一个ShiroFilterFactoryBean配置是或报错的，以为在
      * 初始化ShiroFilterFactoryBean的时候需要注入：SecurityManager
      *
@@ -58,11 +71,61 @@ public class ShiroConfig {
     }
 
     @Bean
-    public SecurityManager securityManager() {
+    public SecurityManager securityManager() throws URISyntaxException {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
         // 设置realm.
         securityManager.setRealm(myShiroRealm());
+
+        // 自定义session管理 使用redis
+        securityManager.setSessionManager(sessionManager());
+
         return securityManager;
+    }
+    /**
+     * 配置shiro redisManager
+     * 使用的是shiro-redis开源插件
+     * @return
+     */
+    public RedisManager redisManager() throws URISyntaxException {
+        RedisManager redisManager = new RedisManager();
+        URI uri = new URI(url);
+
+        redisManager.setHost(uri.getHost());
+        redisManager.setPort(uri.getPort());
+        redisManager.setExpire(1800);// 配置缓存过期时间
+        redisManager.setTimeout(timeout);
+        // password = null?
+        String userInfo = uri.getUserInfo();
+        if(userInfo != null)
+        {
+            String[] info = userInfo.split(":");
+            if(info.length > 1)
+            {
+                redisManager.setPassword(info[1]);
+            }
+        }
+        return redisManager;
+    }
+
+    /**
+     * RedisSessionDAO shiro sessionDao层的实现 通过redis
+     * 使用的是shiro-redis开源插件
+     */
+    @Bean
+    public RedisSessionDAO redisSessionDAO() throws URISyntaxException {
+        RedisSessionDAO redisSessionDAO = new RedisSessionDAO();
+        redisSessionDAO.setRedisManager(redisManager());
+        return redisSessionDAO;
+    }
+    /**
+     * Session Manager
+     * 使用的是shiro-redis开源插件
+     */
+    @Bean
+    public DefaultWebSessionManager sessionManager() throws URISyntaxException {
+        DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
+        sessionManager.setSessionDAO(redisSessionDAO());
+        return sessionManager;
     }
 
     /**
