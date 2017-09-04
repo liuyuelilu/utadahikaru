@@ -12,7 +12,6 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
-
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -56,7 +55,6 @@ public class MyShiroRealm extends AuthorizingRealm {
 		 */
 		Set<String> permissionSet = new HashSet<String>();
 		permissionSet.add("a");
-		permissionSet.add("b");
 		info.setStringPermissions(permissionSet);
 		return info;
 
@@ -68,6 +66,7 @@ public class MyShiroRealm extends AuthorizingRealm {
 		System.out.println("身份认证方法：MyShiroRealm.doGetAuthenticationInfo()");
 
 		UsernamePasswordToken token = (UsernamePasswordToken) authenticationToken;
+
 		//
 		// String name = token.getUsername();
 		// // 访问一次，计数一次
@@ -86,9 +85,11 @@ public class MyShiroRealm extends AuthorizingRealm {
 		// throw new DisabledAccountException("由于密码输入错误次数大于5次，帐号已经禁止1分钟！");
 		// }
 		UUserExample exa = new UUserExample();
+		System.out.println("身份认证方法密码：" + String.valueOf(token.getPassword()));
 		exa.createCriteria().andEmailEqualTo(token.getUsername()).andPswdEqualTo(String.valueOf(token.getPassword()));
 
 		List<UUser> uUsers = uuserMapper.selectByExample(exa);
+		System.out.println("身份认证方77777777：" + uUsers.get(0).getEmail());
 		UUser uUser = null;
 
 		if (uUsers.size() != 0) {
@@ -105,6 +106,7 @@ public class MyShiroRealm extends AuthorizingRealm {
 			// 更新登录时间 last login time
 			uUser.setLastLoginTime(new Date());
 			uuserMapper.updateByPrimaryKey(uUser);
+			System.out.println("身份认证方6666666666：" + uUsers.get(0).getEmail());
 		}
 		return new SimpleAuthenticationInfo(uUser, uUser.getPswd(), getName());
 
