@@ -4,6 +4,7 @@ import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
+import org.crazycake.shiro.RedisCacheManager;
 import org.crazycake.shiro.RedisManager;
 import org.crazycake.shiro.RedisSessionDAO;
 import org.springframework.beans.factory.annotation.Value;
@@ -76,6 +77,9 @@ public class ShiroConfig {
         // 设置realm.
         securityManager.setRealm(myShiroRealm());
 
+        // 自定义缓存实现 使用redis
+        securityManager.setCacheManager(cacheManager());
+
         // 自定义session管理 使用redis
         securityManager.setSessionManager(sessionManager());
 
@@ -106,7 +110,16 @@ public class ShiroConfig {
         }
         return redisManager;
     }
-
+    /**
+     * cacheManager 缓存 redis实现
+     * 使用的是shiro-redis开源插件
+     * @return
+     */
+    public RedisCacheManager cacheManager() throws URISyntaxException {
+        RedisCacheManager redisCacheManager = new RedisCacheManager();
+        redisCacheManager.setRedisManager(redisManager());
+        return redisCacheManager;
+    }
     /**
      * RedisSessionDAO shiro sessionDao层的实现 通过redis
      * 使用的是shiro-redis开源插件

@@ -25,6 +25,15 @@ public class UserVaildContreller {
         return "login";
     }
 
+    @RequestMapping("add")
+    String add() {
+        return "add";
+    }
+
+    @RequestMapping("db")
+    String db() {
+        return "db";
+    }
     /**
      * ajax登录请求
      * @param loginForm

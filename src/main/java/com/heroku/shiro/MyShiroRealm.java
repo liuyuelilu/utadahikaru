@@ -21,6 +21,9 @@ public class MyShiroRealm extends AuthorizingRealm {
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         System.out.println("权限认证方法：MyShiroRealm.doGetAuthenticationInfo()");
+
+
+
         UUser token = (UUser) SecurityUtils.getSubject().getPrincipal();
         Integer userId = token.getId();
         SimpleAuthorizationInfo info =  new SimpleAuthorizationInfo();
