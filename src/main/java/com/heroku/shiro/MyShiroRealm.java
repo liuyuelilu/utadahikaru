@@ -15,8 +15,11 @@ import java.util.*;
 
 public class MyShiroRealm extends AuthorizingRealm {
 
+    /**
+     *
+     */
     @Autowired
-    UUserMapper uuserMapper;
+    private UUserMapper uuserMapper;
 
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
