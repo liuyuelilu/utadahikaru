@@ -5,11 +5,18 @@
 
 
 <div class="container">
-  <h1>Database Output</h1>
-  <ul th:each="record : ${records}">
-    <li th:text="${record}"/>
-  </ul>
-</div>
 
+  <button class="btn"
+          id="login" type="button">test</button>
+</div>
+<script type="text/javascript">
+    $(function() {
+
+        $("#login").click(function(){
+            location.href = "/add";
+        });
+
+    });
+</script>
 </body>
 </html>

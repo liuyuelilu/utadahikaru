@@ -1,26 +1,45 @@
 package com.heroku.shiro;
 
-import com.heroku.entity.UUser;
-import com.heroku.entity.UUserExample;
-import com.heroku.mapper.UUserMapper;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.*;
+import org.apache.shiro.authc.AccountException;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.AuthenticationInfo;
+import org.apache.shiro.authc.AuthenticationToken;
+import org.apache.shiro.authc.DisabledAccountException;
+import org.apache.shiro.authc.SimpleAuthenticationInfo;
+import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.*;
+import com.heroku.entity.UUser;
+import com.heroku.entity.UUserExample;
+import com.heroku.mapper.UUserMapper;
+import com.heroku.util.MyDES;
 
 public class MyShiroRealm extends AuthorizingRealm {
 
+    /**
+     *
+     */
     @Autowired
-    UUserMapper uuserMapper;
+    private UUserMapper uuserMapper;
 
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         System.out.println("权限认证方法：MyShiroRealm.doGetAuthenticationInfo()");
+
+
+
         UUser token = (UUser) SecurityUtils.getSubject().getPrincipal();
         Integer userId = token.getId();
         SimpleAuthorizationInfo info =  new SimpleAuthorizationInfo();
@@ -53,13 +72,21 @@ public class MyShiroRealm extends AuthorizingRealm {
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         System.out.println("身份认证方法：MyShiroRealm.doGetAuthenticationInfo()");
-
         UsernamePasswordToken token = (UsernamePasswordToken) authenticationToken;
+		String password = String.valueOf(token.getPassword());
+		
+		//密码加密查询
+	    //密码进行加密处理  明文为  password+name
 
+			String pawDES = MyDES.encryptBasedDes(password);
+		
+			token.setPassword(pawDES.toCharArray());
+			
         UUserExample exa = new UUserExample();
         exa.createCriteria().andEmailEqualTo(token.getUsername())
                 .andPswdEqualTo(String.valueOf(token.getPassword()));
-
+       
+		// 从数据库获取对应用户名密码的用户
         List<UUser> uUsers = uuserMapper.selectByExample(exa);
         UUser uUser = null;
 
