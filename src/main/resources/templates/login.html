@@ -33,6 +33,8 @@
 			</form>
 			<!-- /form -->
 			<a href="#" class="forgot-password"> Forgot the password? </a>
+			<button id="btnAdd" type="button" class="btn btn-primary "
+						onclick="addModel()">Add</button>
 		</div>
 		<!-- /card-container -->
 	</div>
@@ -92,6 +94,10 @@
 			});
 
 		});
+		function addModel() {
+			$("#btnAdd").button("loading");
+			location.href = "/add";
+		}
 	</script>
 </body>
 </html>
