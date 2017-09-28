@@ -1,19 +1,39 @@
 package com.heroku.controller;
 
-import com.heroku.form.LoginForm;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import com.heroku.entity.UPay;
+import com.heroku.entity.UPayExample;
+import com.heroku.entity.UUser;
+import com.heroku.entity.UUserExample;
+import com.heroku.form.LoginForm;
+import com.heroku.mapper.UPayMapper;
+import com.heroku.mapper.UUserMapper;
+
+import net.minidev.json.JSONArray;
 
 @Controller
 public class UserVaildContreller {
+	private final static Logger logger = LoggerFactory.getLogger(UserVaildContreller.class);
+	@Autowired
+	UUserMapper uuserMapper;
+	@Autowired
+	UPayMapper uPayMapper;
 
 	@RequestMapping("index")
 	String index() {
@@ -28,6 +48,58 @@ public class UserVaildContreller {
 	@RequestMapping(value = "add", method = RequestMethod.POST)
 	String add() {
 		return "add";
+	}
+
+	@RequestMapping(value = "user2", method = RequestMethod.POST)
+	String user2() {
+		return "user2";
+	}
+
+	@RequestMapping(value = "user3", method = RequestMethod.POST)
+	String user3() {
+		return "user3";
+	}
+
+	@RequestMapping(value = "user4", method = RequestMethod.POST)
+	String user4() {
+		return "user4";
+	}
+
+	@RequestMapping(value = "add-s", method = RequestMethod.POST)
+	@ResponseBody
+	public List<UPay> add2() {
+		UPayExample uPayExample = new UPayExample();
+		uPayExample.setOrderByClause("id");
+		List<UPay> uPayList = uPayMapper.selectByExample(uPayExample);
+		return uPayList;
+	}
+
+	@RequestMapping(value = "user-s", method = RequestMethod.POST)
+	@ResponseBody
+	public List<Map<String, Object>> user22() {
+
+		UUser token = (UUser) SecurityUtils.getSubject().getPrincipal();
+		UUserExample exa = new UUserExample();
+		if (!"nie".equals(token.getNickname())) {
+			exa.createCriteria().andEmailEqualTo(token.getEmail());
+		}
+		exa.setOrderByClause("id");
+		List<UUser> uUserList = uuserMapper.selectByExample(exa);
+		List<Map<String, Object>> resultMapList = new ArrayList<Map<String, Object>>();
+
+		for (UUser uUser : uUserList) {
+			Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
+			resultMap.put("Id", uUser.getId());
+			resultMap.put("NickName", uUser.getNickname());
+			resultMap.put("Email", uUser.getEmail());
+			resultMap.put("Pswd", uUser.getPswd());
+			resultMap.put("CreateTime", uUser.getCreateTime());
+			resultMap.put("LastLoginTime", uUser.getLastLoginTime());
+			resultMap.put("Status", uUser.getStatus());
+			resultMapList.add(resultMap);
+		}
+
+		return resultMapList;
 	}
 
 	/**
