@@ -2,8 +2,223 @@
 <html xmlns:th="http://www.thymeleaf.org"
 	th:replace="~{fragments/layout :: layout (~{::body},'index')}">
 
+<<<<<<< HEAD
 <body>
 
 	<div class="alert alert-info text-center" role="alert">adadadadaadadadadada</div>
+=======
+
+<body>
+	<style>
+.btn {
+	background-color: #8C8C8C;
+}
+
+a span {
+	color: #FFFFFF;
+}
+
+#myModal .modal-header {
+	background-color: #000000;
+}
+
+#myModal .modal-header span {
+	color: #FFFFFF;
+}
+
+#div5 {
+	width: 100%;
+	height: 500px;
+	background-color: #CCCCCC;
+}
+
+#div3 {
+	width: 100%;
+	height: 300px;
+	background-color: #CCCCCC;
+}
+
+#div2 {
+	width: 300px;
+	height: 400px;
+	background-color: #C1C2C3;
+	margin-left: 70%;
+}
+
+#myModal a {
+	margin-top: -400px;
+}
+
+#main {
+	width: 300px;
+	height: 200px;
+}
+
+.popover {
+	/*弹出框式样*/
+	width: auto;
+	max-width: 800px;
+	background-color: rgba(0, 0, 0, 1);
+}
+
+.popover.top>.arrow:after {
+	/*弹出框下小三角式样*/
+	border-top-color: rgba(0, 0, 0, 1);
+}
+</style>
+	<form class="form-signin" action="add-s" method="post" id="aaa">
+		<div id="div3"></div>
+		<div id="div5">
+			<div id="div2">
+				<a href="#" class="btn btn-lg"> <span
+					class="glyphicon glyphicon-th-list"></span>
+				</a> <a href="#" id="btn1" class="btn btn-lg" data-toggle="popover"
+					data-html="true" data-placement="top"
+					data-content='<div id="main"></div>'> <span
+					class="glyphicon glyphicon-flash"></span>
+				</a>
+			</div>
+		</div>
+	</form>
+	<script>
+		$(function() {
+			$
+					.ajax({
+						type : 'POST',
+						url : '/add-s',
+						data : $('#aaa').serialize,
+						headers : {
+							'Content-Type' : 'application/json;charset=utf-8'
+						},
+						success : function(data) {
+							var mytime = new Array();
+							var mypay = new Array()
+							for (var i = 0; i < data.length; i++) {
+								mytime[i] = format(data[i].time);
+								mypay[i] = data[i].pay;
+							}
+							function add0(m) {
+								return m < 10 ? '0' + m : m
+							}
+							function format(shijianchuo) {
+								//shijianchuo是整数，否则要parseInt转换
+								var time = new Date(shijianchuo);
+								var y = time.getFullYear();
+								var m = time.getMonth() + 1;
+								var d = time.getDate();
+								var h = time.getHours();
+								var mm = time.getMinutes();
+								var s = time.getSeconds();
+								var shijian = y + '-' + add0(m) + '-' + add0(d)
+										+ ' ' + add0(h) + ':' + add0(mm) + ':'
+										+ add0(s);
+								return shijian;
+							}
+							console.log(mytime);
+							$("#btn1").popover();
+							$('#btn1')
+									.on(
+											'shown.bs.popover',
+											function() {
+												//初始化
+												var myChart = echarts
+														.init(document
+																.getElementById('main'));
+
+												//参数设置
+												var option = {
+													title : { //标题组件
+														text : mytime[0]
+																+ "~"
+																+ mytime[mytime.length - 1],
+														left : 'center',
+														textStyle : {
+															//文字颜色
+															color : '#fff',
+															fontSize : 11
+														}
+													},
+
+													//字体颜色
+													textStyle : {
+														color : 'rgba(255, 255, 255, 1)'
+													},
+													//背景颜色
+													backgroundColor : '#000',
+													tooltip : { //提示框组件
+														trigger : 'axis'
+													},
+													legend : { //图例组件
+														data : [ '邮件营销' ]
+													},
+													grid : { //直角坐标系内绘图网格
+														left : '3%',
+														right : '4%',
+														bottom : '3%',
+														containLabel : true
+													},
+													//工具栏
+													toolbox : {
+														feature : {
+															myTool1 : {
+																show : true,
+																title : 'close ',
+																icon : 'image://http://echarts.baidu.com/images/favicon.png',
+																onclick : function() {
+																	$('#btn1')
+																			.trigger(
+																					"click");
+																}
+															}
+														}
+													},
+													xAxis : { //直角坐标系 grid 中的 x 轴
+														type : 'category',
+														boundaryGap : false,
+														show : false,
+														data : mytime,
+														axisLine : {
+															lineStyle : {
+																color : '#fff',
+																width : 1
+															//这里是为了突出显示加上的
+															}
+														}
+													},
+													yAxis : { //直角坐标系 grid 中的 y 轴
+														type : 'value',
+														//分割线样式
+														splitLine : {
+															show : true,
+															lineStyle : {
+																color : '#fff',
+																width : 1
+															}
+														}
+													},
+													series : [ //系列列表
+													{
+														type : 'line',
+														stack : '总量',
+														data : mypay,
+														itemStyle : {
+															normal : { //折点的颜色
+																color : 'rgba(255, 255, 0, 1)',
+																//折线的颜色
+																lineStyle : {
+																	color : 'rgba(255, 255, 0, 1)'
+																}
+															}
+														}
+													} ]
+												};
+												myChart.setOption(option);
+											})
+						}
+					});
+		});
+	</script>
+
+>>>>>>> Nie'sJob
 </body>
 </html>

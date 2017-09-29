@@ -52,3 +52,13 @@ CREATE TABLE  u_user_role  (
    rid  integer DEFAULT NULL
 ) ;
 
+/*Table structure for table  u_pay  */
+
+DROP TABLE IF EXISTS  u_pay ;
+
+CREATE TABLE  u_pay  (
+   id  serial NOT NULL,
+   pay  integer DEFAULT NULL,
+   time  timestamp DEFAULT NULL,
+  PRIMARY KEY ( id )
+) ;

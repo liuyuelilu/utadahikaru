@@ -1,0 +1,93 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{fragments/layout :: layout (~{::body},'index')}">
+
+<body>
+	<form class="form-signin" action="user-s" method="post" id="user2">
+
+		<div class="container">
+			<div class="col-md-12">
+				<div class="alert alert-info text-center" role="alert">INFOMATION</div>
+			</div>
+			<div class="col-md-12 alert alert-info text-center">
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<td>Id</td>
+							<td>Nickname</td>
+							<td>Email</td>
+							<td>Password</td>
+							<td>Create Time</td>
+							<td>Last Login Time</td>
+							<td>Status</td>
+						</tr>
+					</thead>
+					<tbody id="app">
+						<tr v-for="object in Arrays">
+							<td id="id" ondblclick="edit(this)">{{object.Id}}</td>
+							<td id="nickname" ondblclick="edit(this)">{{object.NickName}}</td>
+							<td id="email" ondblclick="edit(this)">{{object.Email}}</td>
+							<td id="pswd" ondblclick="edit(this)">{{object.Pswd}}</td>
+							<td id="createTime" ondblclick="edit(this)">{{object.CreateTime}}</td>
+							<td id="lastLoginTime" ondblclick="edit(this)">{{object.LastLoginTime}}</td>
+							<td id="status" ondblclick="edit(this)">{{object.Status}}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</form>
+	<script>
+		$(function() {
+			$.ajax({
+				type : 'POST',
+				url : '/user-s',
+				data : $('#user2').serialize,
+				headers : {
+					'Content-Type' : 'application/json;charset=utf-8'
+				},
+				success : function(data) {
+					console.log(data);
+					new Vue({
+						el : "#app",
+						data : {
+							Arrays : data
+						}
+					})
+				}
+			});
+		});
+		function edit(element) {
+			// 获取要编辑的文本内容
+			var oldHtml = element.innerHTML;
+
+			// 创建一个新的 input 输入框
+			var newInput = document.createElement('input');
+
+			// 为新的 input添加属性
+			newInput.type = "text";
+			newInput.value = oldHtml;
+
+			// 清空当前元素的文本内容
+			element.innerHTML = '';
+
+			// 把新的 input 框 追加到当前元素节点中
+			element.appendChild(newInput);
+
+			// 设置选择文本的内容或设置光标位置（两个参数：start,end；start为开始位置，end为结束位置；如果开始位置和结束位置相同则就是光标位置）
+			newInput.setSelectionRange(0, oldHtml.length)
+
+			// 为新 input 框获取焦点
+			newInput.focus();
+
+			// 为新的 input 添加失去焦点事件
+			newInput.onblur = function() {
+				// 判断失去焦点时，input 框的值是否与原值相同，相同则表示没有修改，返回原值；不同则表示有改动，返回新值
+				element.innerHTML = this.value == oldHtml ? oldHtml
+						: this.value;
+			}
+		}
+	</script>
+</body>
+</html>

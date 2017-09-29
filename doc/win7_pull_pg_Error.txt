@@ -10,6 +10,8 @@ pg_dump --verbose -F c -Z 0 -U username -h hostname -p port -d databasename -W >
 
 例 ：E:\workspace\utadahikaru>pg_dump --verbose -F c -Z 0 -U hlvozfpbwbcuio -h ec2-23-21-184-113.compute-1.amazonaws.com -p 5432 -d dar654vm2s39ig -W > heroku.dump
 
+password：00b202eade72e5583fe67d2943af7e52765338c6fedc2ccddb44bc4c7909c799
+
 DB新建
 pg_restore --verbose --no-acl --no-owner  -h localhost -p 5432 -d mydb2 < heroku.dump 
 例 ：E:\workspace\utadahikaru>pg_restore --verbose --no-acl --no-owner -h localhost -p 5432 -d 新建数据ku名 < heroku.dump

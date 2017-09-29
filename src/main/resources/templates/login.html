@@ -24,8 +24,8 @@
 						class="form-control" placeholder="Password" required>
 				</div>
 				<div id="remember" class="checkbox">
-					<label> <input id="rememberMe" type="checkbox" value="remember-me">
-						Remember me
+					<label> <input id="rememberMe" type="checkbox"
+						value="remember-me"> Remember me
 					</label>
 				</div>
 				<button class="btn btn-lg btn-primary btn-block btn-signin"
@@ -39,7 +39,6 @@
 	<!-- /container -->
 	<script type="text/javascript">
 		$(function() {
-
 			$('form').validate({
 				onkeyup : false,
 				onfocusout : false,
@@ -60,16 +59,13 @@
 				highlight : function(element) {
 					$(element).closest('.form-group').addClass('has-error');
 				},
-
 				success : function(label) {
 					label.closest('.form-group').removeClass('has-error');
 					label.remove();
 				},
-
 				errorPlacement : function(error, element) {
 					element.parent('div').append(error);
 				},
-
 				submitHandler : function(form) {
 					$.ajax({
 						type : 'POST',
@@ -78,19 +74,18 @@
 							'Content-Type' : 'application/json;charset=utf-8'
 						},
 						data : JSON.stringify({
-                            username : $("#inputEmail").val(),
-                            password : $("#inputPassword").val(),
-                            rememberMe : $("#rememberMe").is(':checked')
+							username : $("#inputEmail").val(),
+							password : $("#inputPassword").val(),
+							rememberMe : $("#rememberMe").is(':checked')
 						}),
 						success : function(data) {
 							alert(data.message);
-                            data.status == "200" && window.open("/db", "_self")
+							data.status == "200" && window.open("/index", "_self")
 						}
 					});
 					return false;
 				}
 			});
-
 		});
 	</script>
 </body>
